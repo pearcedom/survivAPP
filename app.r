@@ -1,5 +1,12 @@
 #//TODO implement sample ordering check
 #//TODO better error message when km can't be plotted when no points are significant
+#//TODO n_sig as a percentage
+
+
+
+#//NOTE couldn't deploy to shinyapps.io, some error about bioconductor package
+
+
 
 library(shiny)
 library(survivALL)
@@ -11,11 +18,13 @@ library(ggplot2)
 library(ggthemes)
 library(GGally)
 
-ui = fluidPage(
+ui = fluidPage(theme = "bootstrap.css",
                titlePanel("survivAPP"),
                sidebarLayout(
                              sidebarPanel(
                
+                                          helpText("Welcome to survivAPP! Example data can be downloaded
+                                                   from the following link - http://bit.ly/2z4r8YH"),
                                           helpText("Data should be formatted as two tab-delimited .txt 
                                                    files - these are the measurement data
                                                    (such as a matrix of gene expression) and the 
@@ -27,10 +36,8 @@ ui = fluidPage(
                                                    and run."),
                                           helpText("survivALL, optimal Kaplan-meier and 
                                                    summary outputs will then be calculated."),
-                                          helpText("Example data can be downloaded from the following 
-                                                   link - http://bit.ly/2z4r8YH"),
                                           helpText("Details of the full survivALL package can be found at
-                                            https://cran.rstudio.com/web/packages/survivALL/index.html"),
+                                            https://cran.rstudio.com/web/packages/survivALL/index.html &                                             https://www.biorxiv.org/content/early/2017/10/25/208660"),
                                           fileInput('file1', 'Select measure data (.txt)',
                                                     accept=c('text/csv',
                                                              'text/comma-separated-values,text/plain',
