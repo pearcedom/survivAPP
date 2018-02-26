@@ -1,12 +1,7 @@
 #//TODO implement sample ordering check
 #//TODO better error message when km can't be plotted when no points are significant
 #//TODO n_sig as a percentage
-
-
-
 #//NOTE couldn't deploy to shinyapps.io, some error about bioconductor package
-
-
 
 library(shiny)
 library(survivALL)
@@ -23,20 +18,21 @@ ui = fluidPage(theme = "bootstrap.css",
                sidebarLayout(
                              sidebarPanel(
                
-                                          helpText("Welcome to survivAPP! Example data can be downloaded
-                                                   from the following link - http://bit.ly/2z4r8YH"),
+                                          helpText("Welcome to survivAPP!"),
                                           helpText("Data should be formatted as two tab-delimited .txt 
                                                    files - these are the measurement data
                                                    (such as a matrix of gene expression) and the 
                                                    corresponding clinical data which includes event and
                                                    time-to-event information. The two inputs must be in 
                                                    the same sample ordering. Once loaded, select
-                                                   the relevant measure ID and the columns clinical 
-                                                   columns which contain the survival information
-                                                   and run."),
+                                                   the relevant measure ID and clinical 
+                                                   columns containing the survival information
+                                                   and click Run. Be sure to click Run for each new calculation"),
                                           helpText("survivALL, optimal Kaplan-meier and 
                                                    summary outputs will then be calculated."),
-                                          helpText("Details of the full survivALL package can be found at
+                                          helpText("Example data can be downloaded
+                                                   from the following link - http://bit.ly/2z4r8YH"),
+                                          helpText("Details of the full survivALL package can be found at -
                                             https://cran.rstudio.com/web/packages/survivALL/index.html &                                             https://www.biorxiv.org/content/early/2017/10/25/208660"),
                                           fileInput('file1', 'Select measure data (.txt)',
                                                     accept=c('text/csv',
@@ -101,12 +97,15 @@ server = function(input, output, session){
         measure <- myData()
         clinical <- myData2()
         srvall <- survivALL(
-                measure = measure[input$select_measure,], 
+                measure = as.numeric(measure[input$select_measure,]), 
                 srv <- clinical,
                 time = input$select_time,
                 event = input$select_event,
                 bs = c(),
                 measure_name = input$select_measure)
+        contsig <- checkContSig(srvall$measure,
+                                srvall$event_time,
+                                srvall$event)
 
         output$p_all <- renderPlot({
             plotALL(
@@ -134,15 +133,18 @@ server = function(input, output, session){
         }) 
         output$t_sum <- renderTable({
             if(sum(!is.na(srvall$log10_p)) == 0){
-                sum_dfr <- data.frame(measure = input$select_measure,
+                sum_dfr <- data.frame(single_test_sig = contsig,
+                                      measure = input$select_measure,
                                       n_significant = 0,
                                       optimal_p = NA,
                                       optimal_position = NA)
             } else {
-                sum_dfr <- data.frame(measure = input$select_measure,
+                optimal_pos <- which(diff(srvall$clsf) == 1) + 1
+                sum_dfr <- data.frame(single_test_sig = contsig, 
+                                      measure = input$select_measure,
                                       n_significant = sum(!is.na(srvall$log10_p)),
-                                      optimal_p = srvall$p[which.max(srvall$dsr)],
-                                      optimal_position = paste0(round(which.max(srvall$dsr) / 
+                                      optimal_p = srvall$p[optimal_pos],
+                                      optimal_position = paste0(round(optimal_pos / 
                                                                       nrow(srvall) * 100, 3),
                                                                 "%"))
             }
