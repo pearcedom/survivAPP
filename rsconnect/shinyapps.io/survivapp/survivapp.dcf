@@ -5,6 +5,6 @@ account: survivapp
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 228151
-bundleId: 1240260
+bundleId: 1336322
 url: https://pearcedom.shinyapps.io/survivapp/
-when: 1519649197.99263
+when: 1524590624.10458

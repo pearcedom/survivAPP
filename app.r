@@ -1,23 +1,22 @@
 #//TODO implement sample ordering check
 #//TODO better error message when km can't be plotted when no points are significant
 #//TODO n_sig as a percentage
-#//NOTE couldn't deploy to shinyapps.io, some error about bioconductor package
+#//NOTE if deployment is failing, try reinstalling survivALL via install_github()
 
 library(shiny)
-library(survivALL)
 library(Biobase)
-library(survival)
+library(survivALL)
 library(survcomp)
-library(crukCIMisc)
+library(survival)
 library(ggplot2)
-library(ggthemes)
+library(crukCIMisc)
 library(GGally)
+library(ggthemes)
 
 ui = fluidPage(theme = "bootstrap.css",
                titlePanel("survivAPP"),
                sidebarLayout(
                              sidebarPanel(
-               
                                           helpText("Welcome to survivAPP!"),
                                           helpText("Data should be formatted as two tab-delimited .txt 
                                                    files - these are the measurement data
@@ -57,7 +56,9 @@ ui = fluidPage(theme = "bootstrap.css",
                                                    )
 
                                        )
-               )
+               ),
+               hr(),
+               print("Users are advised that whilst no user data is stored persistantly, shinyapps.io hosts via HIPPA & PHI non-compliant infrastructure. For complete security when analysing proprietary datasets we reccommend running the survivALL R package on a local machine")
                                           
 )
 
